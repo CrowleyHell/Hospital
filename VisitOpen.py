@@ -1,16 +1,8 @@
-import hashlib
-import sys
-import uuid
-
-import psycopg2
-from PyQt5.QtWidgets import QTextEdit, QTableWidgetItem, QErrorMessage, QWidget
-from PyQt5.QtWidgets import QPushButton, QLabel, QLineEdit, QHBoxLayout
-from PyQt5.QtWidgets import QDateEdit, QFrame
+from PyQt5.QtWidgets import QTextEdit, QWidget
+from PyQt5.QtWidgets import QPushButton, QLabel
 from PyQt5.QtGui import QFont
-from PyQt5.QtCore import Qt
 import os
-from PatReg import PatientReg
-from PIL import Image
+
 
 class VisitOpen(QWidget):
     def __init__(self, conn, cur, id, pid):
@@ -73,7 +65,7 @@ class VisitOpen(QWidget):
 
         self.picbut = QPushButton(self)
         self.picbut.setText('Download file')
-        self.picbut.setGeometry(10, 490, 200, 30)
+        self.picbut.setGeometry(10, 490, 200, 50)
         self.picbut.clicked.connect(self.download)
 
     def download(self):
@@ -81,6 +73,6 @@ class VisitOpen(QWidget):
         addr = self.cur.fetchall()
         for i in addr:
             print(i[0])
-            os.system('eog -n ' + str(i[0]) +'&')
+            os.system('eog -n ' + str(i[0]) + '&')
 
 

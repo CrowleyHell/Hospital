@@ -1,16 +1,11 @@
-import hashlib
-import sys
-import uuid
-
 import os
 from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem, QHeaderView, QWidget
-from PyQt5.QtWidgets import QPushButton, QLabel, QLineEdit, QHBoxLayout
-from PyQt5.QtWidgets import QDateEdit, QFrame
+from PyQt5.QtWidgets import QPushButton, QLabel
+from PyQt5.QtWidgets import QFrame
 from PyQt5.QtGui import QFont
-from PyQt5.QtCore import Qt
-from PatReg import PatientReg
 from Visit import Visit
 from VisitOpen import VisitOpen
+
 
 class Patient(QWidget):
     def __init__(self, cur, id, conn):
@@ -19,7 +14,6 @@ class Patient(QWidget):
         self.id = id
         self.conn = conn
         self.setWindowTitle('Patient')
-        #self.setWindowFlag(Qt.WindowStaysOnTopHint)
         print(str(self.id))
         self.setGeometry(300, 300, 1000, 700)
         self.cur.execute("select * from patient where patientid = %s", (str(self.id),))

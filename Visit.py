@@ -1,13 +1,9 @@
-import hashlib
-import sys
-import uuid
-
-import psycopg2
-from PyQt5.QtWidgets import QPushButton, QFileDialog, QInputDialog, QWidget
-from PyQt5.QtWidgets import QTextEdit, QLabel, QLineEdit, QHBoxLayout
-from PyQt5.QtWidgets import QDateEdit, QFrame
+from PyQt5.QtWidgets import QPushButton, QFileDialog, QWidget
+from PyQt5.QtWidgets import QTextEdit, QLabel
+from PyQt5.QtWidgets import QDateEdit
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt, QDir
+
 
 class Visit(QWidget):
     def __init__(self, conn, cur, id):
@@ -73,9 +69,6 @@ class Visit(QWidget):
         self.picBut.setGeometry(250, 560, 150, 30)
         self.picBut.clicked.connect(self.upload)
         self.filenames = ''
-        # self.cont = QTextEdit(self)
-        # self.cont.setGeometry(800, 120, 50, 50)
-
 
     def upload(self):
         file = QFileDialog(self)
@@ -85,7 +78,6 @@ class Visit(QWidget):
         file.setDirectory(QDir.homePath())
         if file.exec_():
             self.filenames = file.selectedFiles()
-        #print(self.filenames)
         for i in self.filenames:
             print(str(i))
 
@@ -96,14 +88,15 @@ class Visit(QWidget):
             try:
                 self.cur.execute("insert into medfile (diag, chronic, prescr, compl, ddate, patientid) "
                                  "values (%s, %s, %s, %s, %s, %s) returning fileid",
-                                 (str(self.diag.toPlainText()), str(self.ch.toPlainText()), str(self.pr.toPlainText()), str(self.com.toPlainText()),
+                                 (str(self.diag.toPlainText()), str(self.ch.toPlainText()), str(self.pr.toPlainText()),
+                                  str(self.com.toPlainText()),
                                   str(self.date.text()), self.id))
                 self.fileid = self.cur.fetchone()[0]
                 for i in self.filenames:
-                    self.cur.execute("insert into files (patientid, pathh, fileid) values (%s, %s, %s)", (self.id, str(i), str(self.fileid)))
+                    self.cur.execute("insert into files (patientid, pathh, fileid) values (%s, %s, %s)",
+                                     (self.id, str(i), str(self.fileid)))
                 self.conn.commit()
                 self.close()
             except Exception as e:
                 print(e)
                 pass
-

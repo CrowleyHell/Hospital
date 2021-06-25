@@ -1,14 +1,9 @@
-import hashlib
-import sys
-import uuid
-
-import psycopg2
 from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem, QHeaderView, QWidget
-from PyQt5.QtWidgets import QPushButton, QLabel, QLineEdit, QHBoxLayout
-from PyQt5.QtWidgets import QDateEdit, QFrame
+from PyQt5.QtWidgets import QPushButton, QLabel
 from PyQt5.QtGui import QFont
 from PatReg import PatientReg
 from Patient import Patient
+
 
 class Hospital(QWidget):
     def __init__(self, id, cur, conn):
@@ -41,12 +36,6 @@ class Hospital(QWidget):
         self.info.setFont(self.font)
         self.info2.setFont(self.font)
         self.info3.setFont(self.font)
-        # self.frame = QFrame(self)
-        # self.frame.setLineWidth(3)
-        # self.frame.setMidLineWidth(3)
-        # self.frame.setFrameShape(QFrame.HLine)
-        # self.frame.setFrameShadow(QFrame.Sunken)
-        # self.frame.setGeometry(0, 30, 1000, 3)
 
         self.addBut = QPushButton(self)
         self.addBut.setText('Add new patient')
@@ -60,7 +49,7 @@ class Hospital(QWidget):
         self.updd.setGeometry(700, 24, 170, 50)
         self.updd.clicked.connect(self.upd)
         self.updd.setFont(self.font)
-        #table
+
         self.grid = QTableWidget(self)
         self.grid.setGeometry(0, 96, 1000, 590)
         self.grid.setColumnCount(6)

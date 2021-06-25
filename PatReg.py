@@ -1,12 +1,8 @@
-import hashlib
-import sys
-import uuid
-
-import psycopg2
-from PyQt5.QtWidgets import QVBoxLayout, QApplication, QErrorMessage, QWidget
-from PyQt5.QtWidgets import QPushButton, QLabel, QLineEdit, QHBoxLayout
-from PyQt5.QtWidgets import QDateEdit, QFrame
+from PyQt5.QtWidgets import QErrorMessage, QWidget
+from PyQt5.QtWidgets import QPushButton, QLabel, QLineEdit
+from PyQt5.QtWidgets import QDateEdit
 from PyQt5.QtGui import QFont
+
 
 class PatientReg(QWidget):
     def __init__(self, cur, doctorid, conn):
@@ -89,6 +85,16 @@ class PatientReg(QWidget):
         self.reg.setGeometry(510, 470, 150, 30)
         self.reg.clicked.connect(self.add)
 
+    def nameExists(self, sname, fname, pname, dob):
+        self.cur.execute("select sname, fname, pname, dob from pd ")
+        pd = self.cur.fetchall()
+        #print(pd[0][0], log[0])
+        for i in range(len(pd)):
+            if pname != '':
+                if sname == pd[i][0] and fname == pd[i][1] and dob == pd[i][2]:
+                    return True
+                else:
+                    return False
 
     def add(self):
         if self.fname.text() != '' and self.sname.text() != '' \
@@ -98,16 +104,22 @@ class PatientReg(QWidget):
                     and str(self.sex.text()).isalpha() and str(self.adr.text()).isascii() \
                     and self.pnum.text().isdigit() and self.pol.text().isdigit():
                 if len(self.pol.text()) == 16 and len(self.pnum.text()) == 11:
-                    try:
-                        self.cur.execute("insert into patient (fname, sname, pname, dob, sex, doctorid, adr, pol) values (%s, %s, %s, %s, %s, %s, %s, %s) returning patientid",
-                                         (str(self.fname.text()), str(self.sname.text()), str(self.pname.text()), str(self.dob.text()), str(self.sex.text()), self.doctorid,
-                                          str(self.adr.text()), self.pol.text()))
-                        self.patientid = self.cur.fetchone()[0]
-                        self.conn.commit()
-                        self.close()
-                    except Exception as e:
-                        print(e)
-                        pass
+                    if not self.nameExists(self.sname.text(), self.fname.text(), self.pname.text(), self.dob.text()):
+                        try:
+                            self.cur.execute("insert into patient (fname, sname, pname, dob, sex, doctorid, adr, pol) values (%s, %s, %s, %s, %s, %s, %s, %s) returning patientid",
+                                             (str(self.fname.text()), str(self.sname.text()), str(self.pname.text()), str(self.dob.text()), str(self.sex.text()), self.doctorid,
+                                              str(self.adr.text()), self.pol.text()))
+                            self.patientid = self.cur.fetchone()[0]
+                            self.conn.commit()
+                            self.close()
+                        except Exception as e:
+                            print(e)
+                            pass
+                    else:
+                        errMes = QErrorMessage(self)
+                        errMes.setWindowTitle("Error")
+                        errMes.showMessage("Such patient exists")
+                        return
                 else:
                     errMes = QErrorMessage(self)
                     errMes.setWindowTitle("Error")
