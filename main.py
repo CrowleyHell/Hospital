@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication
-from Auth import Authorization
-from Reg import Registration
+from Authorization import Authorization
+from Registration import Registration
 
 
 if __name__ == '__main__':
